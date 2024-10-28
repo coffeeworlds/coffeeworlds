@@ -4,6 +4,7 @@
 
 plugins {
     id("buildlogic.java-application-conventions")
+    id("com.gradleup.shadow") version "8.3.3"
 }
 
 dependencies {
