@@ -7,26 +7,23 @@ class UnpackerTest {
     @Test void basicIntZero() {
         byte[] data = new byte[]{0x00};
         Unpacker unpacker = new Unpacker(data);
-        assertEquals(unpacker.getInt(), 0);
+        assertEquals(0, unpacker.getInt());
     }
 
     @Test void basicIntOne() {
         byte[] data = new byte[]{0x01};
         Unpacker unpacker = new Unpacker(data);
-        assertEquals(unpacker.getInt(), 1);
+        assertEquals(1, unpacker.getInt());
     }
 
     // @Test void multiByte() {
     //     Unpacker unpacker = new Unpacker(new byte[]{0x3F});
-    //     assertEquals(unpacker.getInt(), 63);
+    //     assertEquals(63, unpacker.getInt());
 
-    //     byte[] data = new byte[]{0x80, 0x01};
-    //     unpacker = new Unpacker(data);
-    //     assertEquals(unpacker.getInt(), 64);
+    //     unpacker = new Unpacker(new byte[]{(byte)0x80, 0x01, 0x02});
+    //     assertEquals(64, unpacker.getInt());
 
-
-    //     // byte[] data = new byte[]{0x80, 0x01};
-    //     // Unpacker unpacker = new Unpacker(data);
-    //     // assertEquals(unpacker.getInt(), 64);
+    //     unpacker = new Unpacker(new byte[]{(byte)0x80, 0x01});
+    //     assertEquals(64, unpacker.getInt());
     // }
 }
