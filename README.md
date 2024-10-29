@@ -7,6 +7,24 @@ A teeworlds 0.7 network library written in java.
 ---
 
 There is a sample client implementation in **client/** and the network library in **network/**.
+
+## Run the sample client
+
+```
+./gradlew shadowJar
+client/build/libs/client-all.jar
+```
+
+## Run tests
+
+Runs the client and network library tests printing actual vs expected if there is an error.
+
+```
+./gradlew test -i
+```
+
+## Use the network library in your project
+
 The network library is also published to jitpack. You can import it to your project by adding the jitpack maven url.
 
 ```kotlin
