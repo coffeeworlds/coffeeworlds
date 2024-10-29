@@ -4,6 +4,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnpackerTest {
+    @Test void basicRaw() {
+        byte[] data = new byte[]{'a', 0x01, 0x0f, 0x0d};
+        Unpacker unpacker = new Unpacker(data);
+        assertArrayEquals(new byte[]{'a'}, unpacker.getRaw(1));
+        assertArrayEquals(new byte[]{0x01}, unpacker.getRaw(1));
+        assertArrayEquals(new byte[]{0x0f, 0x0d}, unpacker.getRaw(2));
+    }
+
     @Test void basicString() {
         byte[] data = new byte[]{'a', 0x00};
         Unpacker unpacker = new Unpacker(data);

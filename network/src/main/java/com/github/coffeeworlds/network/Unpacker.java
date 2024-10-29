@@ -52,6 +52,7 @@ public class Unpacker {
         return res;
     }
 
+    // consume one string
     public String getString() {
         int start = this.index;
         int end = this.index;
@@ -65,6 +66,23 @@ public class Unpacker {
         // drop null byte
         this.index = end + 1;
         return new String(Arrays.copyOfRange(this.fullData, start, end));
+    }
+
+    // consume size amount of bytes
+    public byte[] getRaw(int size) {
+        int start = this.index;
+        int end = start + size;
+        if(end > this.fullData.length) {
+            // TODO: throw error here?
+            end = this.fullData.length;
+        }
+        this.index = end;
+        return Arrays.copyOfRange(this.fullData, start, end);
+    }
+
+    // non consuming dump of the remaining data
+    public byte[] getRemainingData() {
+        return Arrays.copyOfRange(this.fullData, this.index, this.fullData.length);
     }
 }
 
