@@ -1,5 +1,7 @@
 package com.github.coffeeworlds.network;
 
+import java.util.Arrays;
+
 public class Unpacker {
     public byte[] fullData;
     public int index = 0;
@@ -48,6 +50,21 @@ public class Unpacker {
         this.index++;
         res ^= -sign;
         return res;
+    }
+
+    public String getString() {
+        int start = this.index;
+        int end = this.index;
+
+        // TODO: sanitize support
+        while(end < this.fullData.length && this.fullData[end] != 0x00)
+        {
+            end++;
+        }
+
+        // drop null byte
+        this.index = end + 1;
+        return new String(Arrays.copyOfRange(this.fullData, start, end));
     }
 }
 

@@ -4,6 +4,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnpackerTest {
+    @Test void basicString() {
+        byte[] data = new byte[]{'a', 0x00};
+        Unpacker unpacker = new Unpacker(data);
+        assertEquals("a", unpacker.getString());
+    }
+
+    @Test void basicStringAndBasicInt() {
+        byte[] data = new byte[]{'a', 0x00, 0x01, 'b', 0x00, 0x07};
+        Unpacker unpacker = new Unpacker(data);
+        assertEquals("a", unpacker.getString());
+        assertEquals(1, unpacker.getInt());
+        assertEquals("b", unpacker.getString());
+        assertEquals(7, unpacker.getInt());
+    }
+
     @Test void basicIntZero() {
         byte[] data = new byte[]{0x00};
         Unpacker unpacker = new Unpacker(data);
