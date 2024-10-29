@@ -5,6 +5,7 @@
 plugins {
     id("buildlogic.java-application-conventions")
     id("com.gradleup.shadow") version "8.3.3"
+    id("com.adarshr.test-logger") version "4.0.0"
 }
 
 dependencies {
