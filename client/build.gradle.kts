@@ -6,6 +6,7 @@ plugins {
     id("buildlogic.java-application-conventions")
     id("com.gradleup.shadow") version "8.3.3"
     id("com.adarshr.test-logger") version "4.0.0"
+    id("com.diffplug.spotless") version "7.0.0.BETA4"
 }
 
 dependencies {
@@ -17,4 +18,11 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClass = "com.github.coffeeworlds.client.Client"
+}
+
+spotless {
+    java {
+        importOrder()
+        googleJavaFormat()
+    }
 }

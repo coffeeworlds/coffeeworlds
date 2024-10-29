@@ -1,6 +1,7 @@
 plugins {
     id("buildlogic.java-library-conventions")
     id("com.adarshr.test-logger") version "4.0.0"
+    id("com.diffplug.spotless") version "7.0.0.BETA4"
     `maven-publish`
 }
 
@@ -19,3 +20,9 @@ publishing {
     }
 }
 
+spotless {
+    java {
+        importOrder()
+        googleJavaFormat()
+    }
+}
