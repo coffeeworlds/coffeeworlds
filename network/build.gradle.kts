@@ -4,6 +4,22 @@
 
 plugins {
     id("buildlogic.java-library-conventions")
+    `maven-publish`
+}
+
+repositories {
+    google()
+    gradlePluginPortal()
+    mavenCentral()
+    maven { url = uri("https://jitpack.io") }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("Maven") {
+            from(components["java"])
+        }
+    }
 }
 
 // link huffman here once its created at the root of the repo
