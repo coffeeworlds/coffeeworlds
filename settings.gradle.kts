@@ -11,5 +11,5 @@ plugins {
 }
 
 rootProject.name = "coffeeworlds"
-include("client", "network")
+include("client", "network", "huffman")
 

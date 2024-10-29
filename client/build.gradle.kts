@@ -11,6 +11,7 @@ plugins {
 dependencies {
     implementation("org.apache.commons:commons-text")
     implementation(project(":network"))
+    implementation(project(":huffman"))
 }
 
 application {
