@@ -15,6 +15,26 @@ public class NetClient {
   InetAddress serverAddress;
   int serverPort;
 
+  Thread readThread;
+  // used to kill the network thread
+  boolean running = true;
+
+  public NetClient() {
+    // there is one network read thread that will be reused
+    // if we connect to a different server
+    this.readThread = networkReadThread(this);
+  }
+
+  public void shutdown() {
+    this.running = false;
+    System.out.println("net client shutting down ...");
+    try {
+      this.readThread.join();
+    } catch (InterruptedException ex) {
+      System.out.println("net client shutdown interrupted!");
+    }
+  }
+
   public boolean connect(String serverIp, int serverPort) {
     this.serverPort = serverPort;
     try {
@@ -48,27 +68,58 @@ public class NetClient {
     return data;
   }
 
+  static Thread networkReadThread(NetClient client) {
+    return Thread.ofVirtual()
+        .name("network-read")
+        .start(
+            () -> {
+              while (client.running) {
+                // if we are not connected to a server yet
+                if (client.socket == null) {
+                  // this sleep is to avoid cpu spin before connecting to the server
+                  // also fixes not being able to receive anything
+                  // i assume a while true continue freezes the thread scheduler
+                  try {
+                    Thread.sleep(100);
+                  } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt(); // set interrupt flag
+                    System.out.println("Failed to compute sum");
+                  }
+                  continue;
+                }
+
+                try {
+                  byte[] buffer = new byte[512];
+                  DatagramPacket response = new DatagramPacket(buffer, buffer.length);
+
+                  client.socket.receive(response);
+
+                  // creating a copy just to shrink the array sounds nuts
+                  // maybe we should pass the size along instead
+                  byte[] serverData = Arrays.copyOfRange(buffer, 0, response.getLength());
+                  client.onPacket(serverData);
+
+                } catch (SocketTimeoutException ex) {
+                  System.out.println("Timeout error: " + ex.getMessage());
+                  ex.printStackTrace();
+                } catch (IOException ex) {
+                  System.out.println("IO error: " + ex.getMessage());
+                  ex.printStackTrace();
+                }
+              }
+            });
+  }
+
   public void pumpNetwork() {
+    System.out.print(".");
+
     try {
       byte[] data = ctrlConnect();
       DatagramPacket request =
           new DatagramPacket(data, data.length, this.serverAddress, this.serverPort);
       socket.send(request);
-
-      byte[] buffer = new byte[512];
-      DatagramPacket response = new DatagramPacket(buffer, buffer.length);
-      socket.receive(response);
-
-      // creating a copy just to shrink the array sounds nuts
-      // maybe we should pass the size along instead
-      byte[] serverData = Arrays.copyOfRange(buffer, 0, response.getLength());
-      onPacket(serverData);
-
-    } catch (SocketTimeoutException ex) {
-      System.out.println("Timeout error: " + ex.getMessage());
-      ex.printStackTrace();
     } catch (IOException ex) {
-      System.out.println("Client error: " + ex.getMessage());
+      System.out.println("IO error: " + ex.getMessage());
       ex.printStackTrace();
     }
   }

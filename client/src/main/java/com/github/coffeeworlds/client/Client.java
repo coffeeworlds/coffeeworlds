@@ -28,7 +28,7 @@ public class Client {
         Thread.sleep(10000);
       }
     } catch (InterruptedException ex) {
-      System.out.println("shutting down ...");
+      System.out.println("Interrupted!");
     }
   }
 }
