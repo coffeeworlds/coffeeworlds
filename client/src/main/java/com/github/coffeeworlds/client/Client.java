@@ -21,6 +21,16 @@ public class Client {
 
     NetClient netClient = new NetClient();
     netClient.connect(serverIp, port);
+    netClient.sendData(netClient.ctrlConnect());
+
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread() {
+              public void run() {
+                System.out.println("shutting down ...");
+                netClient.disconnect();
+              }
+            });
 
     try {
       while (true) {

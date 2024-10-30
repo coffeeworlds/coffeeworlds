@@ -15,24 +15,19 @@ public class NetClient {
   InetAddress serverAddress;
   int serverPort;
 
-  Thread readThread;
-  // used to kill the network thread
-  boolean running = true;
-
   public NetClient() {
     // there is one network read thread that will be reused
     // if we connect to a different server
-    this.readThread = networkReadThread(this);
+    // and we never cleanly shut it down lol
+    // even if we would signal a shutdown flag to it
+    // its blocked on the read so it would be unreliable
+    networkReadThread(this);
   }
 
-  public void shutdown() {
-    this.running = false;
-    System.out.println("net client shutting down ...");
-    try {
-      this.readThread.join();
-    } catch (InterruptedException ex) {
-      System.out.println("net client shutdown interrupted!");
-    }
+  public void disconnect() {
+    System.out.println("disconnecting ...");
+    // TODO: actually send ctrl close
+    sendData(new byte[] {0x04});
   }
 
   public boolean connect(String serverIp, int serverPort) {
@@ -73,7 +68,7 @@ public class NetClient {
         .name("network-read")
         .start(
             () -> {
-              while (client.running) {
+              while (true) {
                 // if we are not connected to a server yet
                 if (client.socket == null) {
                   // this sleep is to avoid cpu spin before connecting to the server
@@ -112,9 +107,10 @@ public class NetClient {
 
   public void pumpNetwork() {
     System.out.print(".");
+  }
 
+  void sendData(byte[] data) {
     try {
-      byte[] data = ctrlConnect();
       DatagramPacket request =
           new DatagramPacket(data, data.length, this.serverAddress, this.serverPort);
       socket.send(request);
