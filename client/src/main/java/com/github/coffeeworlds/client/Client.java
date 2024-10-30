@@ -17,25 +17,24 @@ public class Client {
     }
 
     String serverIp = args[0];
-    int port = Integer.parseInt(args[1]);
+    int serverPort = Integer.parseInt(args[1]);
 
-    NetClient netClient = new NetClient();
-    netClient.connect(serverIp, port);
-    netClient.sendData(netClient.ctrlConnect());
+    GameClient gameClient = new GameClient();
+    gameClient.connect(serverIp, serverPort);
 
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread() {
               public void run() {
                 System.out.println("shutting down ...");
-                netClient.disconnect();
+                gameClient.disconnect();
               }
             });
 
     try {
       while (true) {
-        netClient.pumpNetwork();
-        Thread.sleep(10000);
+        gameClient.onTick();
+        Thread.sleep(100);
       }
     } catch (InterruptedException ex) {
       System.out.println("Interrupted!");

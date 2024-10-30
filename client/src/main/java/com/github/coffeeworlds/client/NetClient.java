@@ -8,20 +8,21 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.HexFormat;
 
 public class NetClient {
   DatagramSocket socket;
   InetAddress serverAddress;
   int serverPort;
+  GameClient gameClient;
 
-  public NetClient() {
+  public NetClient(GameClient gameClient) {
     // there is one network read thread that will be reused
     // if we connect to a different server
     // and we never cleanly shut it down lol
     // even if we would signal a shutdown flag to it
     // its blocked on the read so it would be unreliable
     networkReadThread(this);
+    this.gameClient = gameClient;
   }
 
   public void disconnect() {
@@ -45,22 +46,6 @@ public class NetClient {
       return false;
     }
     return true;
-  }
-
-  public byte[] ctrlConnect() {
-    byte[] data = new byte[600];
-    data[0] = 0x04;
-    data[1] = 0x00;
-    data[3] = (byte) 0xff;
-    data[4] = (byte) 0xff;
-    data[5] = (byte) 0xff;
-    data[6] = (byte) 0xff;
-    data[7] = 0x05; // ctrl connect
-    data[8] = 0x0c;
-    data[9] = 0x0c;
-    data[10] = 0x0c;
-    data[11] = 0x0c;
-    return data;
   }
 
   static Thread networkReadThread(NetClient client) {
@@ -105,10 +90,6 @@ public class NetClient {
             });
   }
 
-  public void pumpNetwork() {
-    System.out.print(".");
-  }
-
   void sendData(byte[] data) {
     try {
       DatagramPacket request =
@@ -121,8 +102,6 @@ public class NetClient {
   }
 
   void onPacket(byte[] data) {
-    String hex = HexFormat.of().withUpperCase().formatHex(data);
-    System.out.println(hex);
-    System.out.println();
+    this.gameClient.onNetworkData(data);
   }
 }
