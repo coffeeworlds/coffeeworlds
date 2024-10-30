@@ -21,6 +21,23 @@ public class Packer {
     return this.offset;
   }
 
+  public void addInt(int num) {
+    if (num < 0) {
+      this.buffer[this.offset] |= 0x40; // set sign bit
+      num = ~num;
+    }
+
+    this.buffer[this.offset] |= num & 0x3f; // pack 6bit into dest
+    num >>= 6; // discard 6 bits
+    while (num != 0) {
+      this.buffer[this.offset] |= 0x80; // set extend bit
+      this.offset++;
+      this.buffer[this.offset] = (byte) (num & 0x7f); // pack 7bit
+      num >>= 7; // discard 7 bits
+    }
+    this.offset++;
+  }
+
   public void addString(String text) {
     byte[] packedStr = text.getBytes();
     System.arraycopy(packedStr, 0, this.buffer, this.offset, packedStr.length);
