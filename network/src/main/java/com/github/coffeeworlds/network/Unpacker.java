@@ -12,7 +12,14 @@ public class Unpacker {
 
   // get the last byte without consuming it
   public byte getByte() {
-    return this.fullData[index];
+    return this.fullData[this.index];
+  }
+
+  // consume one byte
+  public byte popByte() {
+    byte b = this.fullData[this.index];
+    this.index++;
+    return b;
   }
 
   // pop the latest int from the data
