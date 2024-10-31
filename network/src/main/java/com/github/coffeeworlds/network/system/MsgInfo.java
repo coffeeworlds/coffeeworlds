@@ -3,6 +3,7 @@ package com.github.coffeeworlds.network.system;
 import com.github.coffeeworlds.network.MsgPacker;
 import com.github.coffeeworlds.network.MsgPacker.MsgType;
 import com.github.coffeeworlds.network.SystemMessage;
+import com.github.coffeeworlds.network.Unpacker;
 
 class MsgInfo {
   public String netVersion;
@@ -25,6 +26,17 @@ class MsgInfo {
     this.netVersion = "0.7 802f1be60a05665f";
     this.password = "";
     this.clientVersion = 0x0705;
+  }
+
+  public MsgInfo(byte[] data) {
+    unpack(data);
+  }
+
+  public void unpack(byte[] data) {
+    Unpacker unpacker = new Unpacker(data);
+    this.netVersion = unpacker.getString();
+    this.password = unpacker.getString();
+    this.clientVersion = unpacker.getInt();
   }
 
   public byte[] pack() {
