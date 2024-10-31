@@ -11,6 +11,13 @@ public class PacketFlags {
   public boolean compression = false;
   public boolean connless = false;
 
+  public void fromNumber(int flags) {
+    this.control = (flags & FLAG_CONTROL) != 0;
+    this.resend = (flags & FLAG_RESEND) != 0;
+    this.compression = (flags & FLAG_COMPRESSION) != 0;
+    this.connless = (flags & FLAG_CONNLESS) != 0;
+  }
+
   public int toNumber() {
     int flags = 0;
     if (this.control) {
