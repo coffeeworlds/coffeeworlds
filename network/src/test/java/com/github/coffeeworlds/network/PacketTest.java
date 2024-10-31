@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 class PacketTest {
   @Test
   void basic() {
-    Packet packet = new Packet();
+    PacketHeader header = new PacketHeaderBuilder().buildHeader();
+    Packet packet = new Packet(header);
     assertEquals(0, packet.numMessages());
   }
 }

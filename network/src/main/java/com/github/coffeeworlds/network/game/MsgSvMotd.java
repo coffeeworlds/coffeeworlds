@@ -5,20 +5,19 @@ import com.github.coffeeworlds.network.MsgPacker;
 import com.github.coffeeworlds.network.MsgPacker.MsgType;
 
 class MsgSvMotd {
-  private String _message;
+  public String message;
 
   public MsgSvMotd() {
-    this._message = "";
+    this.message = "";
   }
 
-  public MsgSvMotd message(String text) {
-    this._message = text;
-    return this;
+  public MsgSvMotd(String message) {
+    this.message = message;
   }
 
   public byte[] data() {
     MsgPacker msg = new MsgPacker(GameMessage.SV_MOTD, MsgType.GAME);
-    msg.addString(this._message);
+    msg.addString(this.message);
     return msg.data();
   }
 }
