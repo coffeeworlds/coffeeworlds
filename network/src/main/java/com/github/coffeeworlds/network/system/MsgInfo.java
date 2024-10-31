@@ -2,10 +2,11 @@ package com.github.coffeeworlds.network.system;
 
 import com.github.coffeeworlds.network.MsgPacker;
 import com.github.coffeeworlds.network.MsgPacker.MsgType;
+import com.github.coffeeworlds.network.NetMessage;
 import com.github.coffeeworlds.network.SystemMessage;
 import com.github.coffeeworlds.network.Unpacker;
 
-class MsgInfo {
+public class MsgInfo implements NetMessage {
   public String netVersion;
   public String password;
   public int clientVersion;
