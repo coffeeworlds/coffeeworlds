@@ -12,7 +12,7 @@ There is a sample client implementation in **client/** and the network library i
 
 ```
 ./gradlew shadowJar
-java -jar client/build/libs/client-all.jar
+java -jar client/build/libs/client-all.jar localhost 8303
 ```
 
 ## Use the network library in your project
