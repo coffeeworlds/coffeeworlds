@@ -1,5 +1,6 @@
 package com.github.coffeeworlds.client;
 
+import com.github.coffeeworlds.network.UdpClient;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,7 +10,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-public class NetClient {
+public class NetClient implements UdpClient {
   DatagramSocket socket;
   InetAddress serverAddress;
   int serverPort;
@@ -23,12 +24,6 @@ public class NetClient {
     // its blocked on the read so it would be unreliable
     networkReadThread(this);
     this.gameClient = gameClient;
-  }
-
-  public void disconnect() {
-    System.out.println("disconnecting ...");
-    // TODO: actually send ctrl close
-    sendData(new byte[] {0x04});
   }
 
   public boolean connect(String serverIp, int serverPort) {
@@ -90,7 +85,7 @@ public class NetClient {
             });
   }
 
-  void sendData(byte[] data) {
+  public void send(byte[] data) {
     try {
       DatagramPacket request =
           new DatagramPacket(data, data.length, this.serverAddress, this.serverPort);

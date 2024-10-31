@@ -31,6 +31,11 @@ public class PacketHeaderBuilder {
     return this;
   }
 
+  PacketHeaderBuilder setFlagControl(boolean control) {
+    this._flags.control = control;
+    return this;
+  }
+
   PacketHeaderBuilder setFlagResend() {
     this._flags.resend = true;
     return this;

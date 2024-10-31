@@ -1,65 +1,40 @@
 package com.github.coffeeworlds.client;
 
+import com.github.coffeeworlds.network.ControlMessage;
+import com.github.coffeeworlds.network.Session;
+import com.github.coffeeworlds.network.TeeworldsClient;
+import java.util.Arrays;
 import java.util.HexFormat;
 
 public class GameClient {
   byte[] serverToken;
   byte[] clientToken;
   NetClient netClient;
+  Session session;
+  TeeworldsClient client;
 
   GameClient() {
-    this.serverToken = new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    // this should be random xd
-    this.clientToken = new byte[] {0x01, 0x01, 0x02, 0x01};
-
+    this.session = new Session();
     this.netClient = new NetClient(this);
+    this.client = new TeeworldsClient(this.netClient);
   }
 
   public void connect(String serverIp, int serverPort) {
     this.netClient.connect(serverIp, serverPort);
-    this.netClient.sendData(ctrlToken());
+
+    // TODO: 600 is too much
+    byte[] tokenMsg = Arrays.copyOf(this.session.token, 600);
+    this.client.sendCtrlMsg(ControlMessage.TOKEN, tokenMsg);
   }
 
   public void disconnect() {
-    this.netClient.disconnect();
-  }
-
-  public byte[] ctrlToken() {
-    byte[] data = new byte[600];
-    data[0] = 0x04;
-    data[1] = 0x00;
-    data[2] = 0x00;
-    data[3] = (byte) 0xff;
-    data[4] = (byte) 0xff;
-    data[5] = (byte) 0xff;
-    data[6] = (byte) 0xff;
-    data[7] = 0x05; // ctrl connect
-    data[8] = this.clientToken[0];
-    data[9] = this.clientToken[1];
-    data[10] = this.clientToken[2];
-    data[11] = this.clientToken[3];
-
-    return data;
+    this.client.sendCtrlMsg(ControlMessage.CLOSE);
   }
 
   public void sendCtrlConnect() {
-    byte[] data = new byte[600]; // this is too much
-
-    // yes I do not know java. What gave it away?
-    data[0] = 0x04;
-    data[1] = 0x00;
-    data[2] = 0x00;
-    data[3] = this.serverToken[0];
-    data[4] = this.serverToken[1];
-    data[5] = this.serverToken[2];
-    data[6] = this.serverToken[3];
-    data[7] = 0x01;
-    data[8] = this.clientToken[0];
-    data[9] = this.clientToken[1];
-    data[10] = this.clientToken[2];
-    data[11] = this.clientToken[3];
-
-    this.netClient.sendData(data);
+    // TODO: 600 is too much
+    byte[] payload = Arrays.copyOf(this.session.token, 600);
+    this.client.sendCtrlMsg(ControlMessage.CONNECT, payload);
   }
 
   public void sendVersionAndPassword() {
@@ -81,10 +56,10 @@ public class GameClient {
       System.out.println("got ctrl msg: " + ctrlMsg);
       // ctrl token
       if (ctrlMsg == 0x05) {
-        this.serverToken[0] = data[8];
-        this.serverToken[1] = data[9];
-        this.serverToken[2] = data[10];
-        this.serverToken[3] = data[11];
+        this.session.peerToken[0] = data[8];
+        this.session.peerToken[1] = data[9];
+        this.session.peerToken[2] = data[10];
+        this.session.peerToken[3] = data[11];
 
         sendCtrlConnect();
       } else if (ctrlMsg == 0x02) { // accpet

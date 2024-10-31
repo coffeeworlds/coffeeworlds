@@ -1,6 +1,8 @@
 package com.github.coffeeworlds.network;
 
 public interface NetMessage {
+  public ChunkHeader header = null;
+
   // unpack message payload
   // data has to point to the first field
   // in the message

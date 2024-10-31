@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 public class Packet {
   public PacketHeader header;
-  public ArrayList<NetMessage> messages;
+  public ArrayList<Chunk> messages;
 
   public Packet(PacketHeader header) {
     this.header = header;
-    this.messages = new ArrayList<NetMessage>();
+    this.messages = new ArrayList<Chunk>();
   }
 
-  public void addMsg(NetMessage msg) {
-    this.messages.add(msg);
+  public void addMessage(Chunk chunk) {
+    this.messages.add(chunk);
   }
 
   public int numMessages() {
@@ -25,8 +25,13 @@ public class Packet {
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     try {
       stream.write(this.header.pack());
-      for (NetMessage msg : this.messages) {
-        stream.write(msg.pack());
+      for (Chunk chunk : this.messages) {
+        byte[] msgPayload = chunk.message.pack();
+        if (chunk.header.size == -1) {
+          chunk.header.size = msgPayload.length;
+        }
+        stream.write(chunk.header.pack());
+        stream.write(msgPayload);
       }
     } catch (IOException ex) {
       System.out.println("packet pack failed: " + ex.getMessage());

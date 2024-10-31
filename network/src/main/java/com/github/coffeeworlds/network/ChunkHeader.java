@@ -11,9 +11,27 @@ public class ChunkHeader {
     this.flags = flags;
   }
 
+  public ChunkHeader(int sequenceNumber, ChunkFlags flags) {
+    this.size = -1;
+    this.seq = sequenceNumber;
+    this.flags = flags;
+  }
+
+  public ChunkHeader(int sequenceNumber) {
+    this.size = -1;
+    this.seq = 0;
+    this.flags = new ChunkFlags();
+    this.flags.vital = true;
+  }
+
   public ChunkHeader(byte[] data) {
     this.flags = new ChunkFlags();
     unpack(data);
+  }
+
+  public ChunkHeader(Unpacker unpacker) {
+    this.flags = new ChunkFlags();
+    unpack(unpacker);
   }
 
   public void unpack(Unpacker unpacker) {
