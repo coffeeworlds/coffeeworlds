@@ -1,6 +1,6 @@
 package com.github.coffeeworlds.network.system;
 
-class MsgInfoBuilder {
+public class MsgInfoBuilder {
   private String _netVersion;
   private String _password;
   private int _clientVersion;

@@ -3,6 +3,8 @@ package com.github.coffeeworlds.client;
 import com.github.coffeeworlds.network.ControlMessage;
 import com.github.coffeeworlds.network.Session;
 import com.github.coffeeworlds.network.TeeworldsClient;
+import com.github.coffeeworlds.network.system.MsgInfo;
+import com.github.coffeeworlds.network.system.MsgInfoBuilder;
 import java.util.HexFormat;
 
 public class GameClient {
@@ -15,7 +17,7 @@ public class GameClient {
   GameClient() {
     this.session = new Session();
     this.netClient = new NetClient(this);
-    this.client = new TeeworldsClient(this.netClient);
+    this.client = new TeeworldsClient(this.session, this.netClient);
   }
 
   public void connect(String serverIp, int serverPort) {
@@ -36,11 +38,15 @@ public class GameClient {
   }
 
   public void sendVersionAndPassword() {
-    System.out.println("TODO: send version and password");
+    MsgInfo msg = new MsgInfoBuilder().password("").buildMsg();
+    this.client.sendMessage(msg);
   }
 
   public void onTick() {
     System.out.print(".");
+
+    // TODO: when do we flush?
+    this.client.flush();
   }
 
   public void onNetworkData(byte[] data) {
@@ -52,16 +58,19 @@ public class GameClient {
     if (data[0] == 0x04) {
       int ctrlMsg = data[7];
       System.out.println("got ctrl msg: " + ctrlMsg);
-      // ctrl token
-      if (ctrlMsg == 0x05) {
+      if (ctrlMsg == ControlMessage.TOKEN) {
         this.session.peerToken[0] = data[8];
         this.session.peerToken[1] = data[9];
         this.session.peerToken[2] = data[10];
         this.session.peerToken[3] = data[11];
 
         sendCtrlConnect();
-      } else if (ctrlMsg == 0x02) { // accpet
+      } else if (ctrlMsg == ControlMessage.ACCEPT) {
+        System.out.println("got accpet");
         sendVersionAndPassword();
+      } else if (ctrlMsg == ControlMessage.CLOSE) {
+        System.out.println("got close from server");
+        System.exit(0);
       }
     } else { // game message
     }
