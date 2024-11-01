@@ -11,6 +11,38 @@ public class PacketFlags {
   public boolean compression = false;
   public boolean connless = false;
 
+  @Override
+  public String toString() {
+    String flags = "";
+    if (this.control) {
+      flags += "control";
+    }
+    if (this.resend) {
+      if (flags != "") {
+        flags += ", ";
+      }
+      flags += "resend";
+    }
+    if (this.compression) {
+      if (flags != "") {
+        flags += ", ";
+      }
+      flags += "compression";
+    }
+    if (this.connless) {
+      if (flags != "") {
+        flags += ", ";
+      }
+      flags += "connless";
+    }
+
+    if (flags == "") {
+      flags = "null";
+    }
+
+    return flags;
+  }
+
   public void fromNumber(int flags) {
     this.control = (flags & FLAG_CONTROL) != 0;
     this.resend = (flags & FLAG_RESEND) != 0;

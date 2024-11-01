@@ -1,6 +1,7 @@
 package com.github.coffeeworlds.client;
 
 import com.github.coffeeworlds.network.ControlMessage;
+import com.github.coffeeworlds.network.Packet;
 import com.github.coffeeworlds.network.Session;
 import com.github.coffeeworlds.network.TeeworldsClient;
 import com.github.coffeeworlds.network.system.MsgInfo;
@@ -43,19 +44,18 @@ public class GameClient {
   }
 
   public void onTick() {
-    System.out.print(".");
+    // System.out.print(".");
 
     // TODO: when do we flush?
     this.client.flush();
   }
 
   public void onNetworkData(byte[] data) {
-    String hex = HexFormat.of().withUpperCase().formatHex(data);
-    System.out.println(hex);
-    System.out.println();
+    Packet packet = new Packet(data);
+    System.out.println(packet);
 
     // control message
-    if (data[0] == 0x04) {
+    if (packet.header.flags.control) {
       int ctrlMsg = data[7];
       System.out.println("got ctrl msg: " + ctrlMsg);
       if (ctrlMsg == ControlMessage.TOKEN) {
@@ -71,8 +71,19 @@ public class GameClient {
       } else if (ctrlMsg == ControlMessage.CLOSE) {
         System.out.println("got close from server");
         System.exit(0);
+      } else if (ctrlMsg == ControlMessage.KEEPALIVE) {
+        // silently ignore keepalives
+      } else {
+        System.out.println("unknown control message: " + ctrlMsg);
+        String hex = HexFormat.of().withUpperCase().formatHex(data);
+        System.out.println(hex);
+        System.out.println();
       }
-    } else { // game message
+    } else { // game or sys message
+      System.out.println("unsupported message:");
+      String hex = HexFormat.of().withUpperCase().formatHex(data);
+      System.out.println(hex);
+      System.out.println();
     }
   }
 }

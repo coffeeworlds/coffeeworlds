@@ -24,6 +24,19 @@ public class PacketHeader {
     unpack(data);
   }
 
+  public PacketHeader() {
+    this.buffer = new byte[7];
+    this.flags = new PacketFlags();
+    this.token = new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    this.ack = 0;
+    this.numChunks = 0;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("<PacketHeader flags=(%s)>", this.flags);
+  }
+
   private void packToken() {
     this.buffer[3] = this.token[0];
     this.buffer[4] = this.token[1];

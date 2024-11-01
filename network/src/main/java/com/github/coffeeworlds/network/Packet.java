@@ -13,12 +13,27 @@ public class Packet {
     this.messages = new ArrayList<Chunk>();
   }
 
+  public Packet(byte[] data) {
+    this.header = new PacketHeader();
+    this.messages = new ArrayList<Chunk>();
+    unpack(data);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("<Packet header=%s>", this.header);
+  }
+
   public void addMessage(Chunk chunk) {
     this.messages.add(chunk);
   }
 
   public int numMessages() {
     return this.messages.size();
+  }
+
+  public void unpack(byte[] data) {
+    this.header.unpack(data);
   }
 
   public byte[] pack() {
