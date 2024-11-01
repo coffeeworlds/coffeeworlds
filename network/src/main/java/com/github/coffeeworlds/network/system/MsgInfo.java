@@ -37,6 +37,13 @@ public class MsgInfo implements NetMessage {
     unpack(unpacker);
   }
 
+  @Override
+  public String toString() {
+    return String.format(
+        "<MsgInfo netVersion='%s' password='%s' clientVersion=%d>",
+        this.netVersion, this.password, this.clientVersion);
+  }
+
   public String name() {
     return this.getClass().getSimpleName();
   }

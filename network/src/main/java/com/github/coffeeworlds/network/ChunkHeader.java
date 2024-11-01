@@ -34,6 +34,11 @@ public class ChunkHeader {
     unpack(unpacker);
   }
 
+  @Override
+  public String toString() {
+    return String.format("<ChunkHeader seq=%d size=%d>", this.seq, this.size);
+  }
+
   public void unpack(Unpacker unpacker) {
     byte[] data = unpacker.getRaw(2);
     this.flags.fromNumber((data[0] >> 6) & 0x03);
