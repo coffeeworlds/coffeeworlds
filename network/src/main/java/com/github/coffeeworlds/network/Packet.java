@@ -3,6 +3,7 @@ package com.github.coffeeworlds.network;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HexFormat;
 
 public class Packet {
   public PacketHeader header;
@@ -13,10 +14,10 @@ public class Packet {
     this.messages = new ArrayList<Chunk>();
   }
 
-  public Packet(byte[] data) {
+  public Packet(byte[] data, Session session) {
     this.header = new PacketHeader();
     this.messages = new ArrayList<Chunk>();
-    unpack(data);
+    unpack(data, session);
   }
 
   @Override
@@ -32,8 +33,28 @@ public class Packet {
     return this.messages.size();
   }
 
-  public void unpack(byte[] data) {
+  public void unpack(byte[] data, Session session) {
     this.header.unpack(data);
+    Unpacker unpacker = new Unpacker(data);
+    // pop header before parsing messages
+    unpacker.getRaw(Protocol.NET_PACKETHEADERSIZE);
+
+    if (this.header.flags.control) {
+      // the user has to handle those lol
+      return;
+    }
+
+    MessageMatcher matcher = new MessageMatcher(session, unpacker);
+    try {
+      while (matcher.getMessage()) {
+        // do what now?
+      }
+    } catch (TeeworldsException ex) {
+      System.out.println("!!! full packet: " + HexFormat.of().formatHex(unpacker.getFullData()));
+      System.out.println("!!! packet unpack failed: " + ex.getMessage());
+      ex.printStackTrace();
+    }
+    this.messages = matcher.messages;
   }
 
   public byte[] pack() {

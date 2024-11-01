@@ -3,8 +3,8 @@ package com.github.coffeeworlds.network;
 import java.util.Arrays;
 
 public class Unpacker {
-  public byte[] fullData;
-  public int index = 0;
+  private byte[] fullData;
+  private int index = 0;
 
   public Unpacker(byte[] data) {
     this.fullData = data;
@@ -89,5 +89,14 @@ public class Unpacker {
   // non consuming dump of the remaining data
   public byte[] getRemainingData() {
     return Arrays.copyOfRange(this.fullData, this.index, this.fullData.length);
+  }
+
+  // non consuming data dump
+  public byte[] getFullData() {
+    return this.fullData;
+  }
+
+  public int remainingSize() {
+    return this.fullData.length - this.index;
   }
 }

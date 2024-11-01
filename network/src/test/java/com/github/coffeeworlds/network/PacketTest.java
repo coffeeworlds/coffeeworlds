@@ -37,7 +37,8 @@ class PacketTest {
                     + "40 28 01 03 30 2e 37 20 38 30 32 66 31 62 65 36 30 61 "
                     + "30 35 36 36 35 66 00 6d 79 5f 70 61 73 73 77 6f 72 64 "
                     + "5f 31 32 33 00 85 1c");
-    Packet packet = new Packet(data);
+    Session session = new Session();
+    Packet packet = new Packet(data, session);
     assertEquals(false, packet.header.flags.control);
     assertEquals(false, packet.header.flags.compression);
     assertEquals(false, packet.header.flags.resend);

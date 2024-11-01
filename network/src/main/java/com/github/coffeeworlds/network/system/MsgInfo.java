@@ -33,11 +33,23 @@ public class MsgInfo implements NetMessage {
     unpack(data);
   }
 
-  public void unpack(byte[] data) {
-    Unpacker unpacker = new Unpacker(data);
+  public MsgInfo(Unpacker unpacker) {
+    unpack(unpacker);
+  }
+
+  public String name() {
+    return this.getClass().getSimpleName();
+  }
+
+  public void unpack(Unpacker unpacker) {
     this.netVersion = unpacker.getString();
     this.password = unpacker.getString();
     this.clientVersion = unpacker.getInt();
+  }
+
+  public void unpack(byte[] data) {
+    Unpacker unpacker = new Unpacker(data);
+    unpack(unpacker);
   }
 
   public byte[] pack() {

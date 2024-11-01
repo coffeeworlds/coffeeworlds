@@ -1,9 +1,12 @@
 package com.github.coffeeworlds.client;
 
+import com.github.coffeeworlds.network.Chunk;
 import com.github.coffeeworlds.network.ControlMessage;
 import com.github.coffeeworlds.network.Packet;
+import com.github.coffeeworlds.network.Protocol;
 import com.github.coffeeworlds.network.Session;
 import com.github.coffeeworlds.network.TeeworldsClient;
+import com.github.coffeeworlds.network.Unpacker;
 import com.github.coffeeworlds.network.system.MsgInfo;
 import com.github.coffeeworlds.network.system.MsgInfoBuilder;
 import java.util.HexFormat;
@@ -51,12 +54,14 @@ public class GameClient {
   }
 
   public void onNetworkData(byte[] data) {
-    Packet packet = new Packet(data);
+    Packet packet = new Packet(data, this.session);
     System.out.println(packet);
 
     // control message
     if (packet.header.flags.control) {
-      int ctrlMsg = data[7];
+      Unpacker unpacker = new Unpacker(data);
+      unpacker.getRaw(Protocol.NET_PACKETHEADERSIZE);
+      int ctrlMsg = unpacker.getInt();
       System.out.println("got ctrl msg: " + ctrlMsg);
       if (ctrlMsg == ControlMessage.TOKEN) {
         this.session.peerToken[0] = data[8];
@@ -80,10 +85,9 @@ public class GameClient {
         System.out.println();
       }
     } else { // game or sys message
-      System.out.println("unsupported message:");
-      String hex = HexFormat.of().withUpperCase().formatHex(data);
-      System.out.println(hex);
-      System.out.println();
+      for (Chunk msg : packet.messages) {
+        System.out.println("got msg: " + msg.message.name());
+      }
     }
   }
 }
