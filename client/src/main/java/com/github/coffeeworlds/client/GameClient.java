@@ -3,7 +3,6 @@ package com.github.coffeeworlds.client;
 import com.github.coffeeworlds.network.ControlMessage;
 import com.github.coffeeworlds.network.Session;
 import com.github.coffeeworlds.network.TeeworldsClient;
-import java.util.Arrays;
 import java.util.HexFormat;
 
 public class GameClient {
@@ -21,20 +20,19 @@ public class GameClient {
 
   public void connect(String serverIp, int serverPort) {
     this.netClient.connect(serverIp, serverPort);
-
-    // TODO: 600 is too much
-    byte[] tokenMsg = Arrays.copyOf(this.session.token, 600);
-    this.client.sendCtrlMsg(ControlMessage.TOKEN, tokenMsg);
+    sendCtrlToken();
   }
 
   public void disconnect() {
     this.client.sendCtrlMsg(ControlMessage.CLOSE);
   }
 
+  public void sendCtrlToken() {
+    this.client.sendCtrlToken(this.session.token);
+  }
+
   public void sendCtrlConnect() {
-    // TODO: 600 is too much
-    byte[] payload = Arrays.copyOf(this.session.token, 600);
-    this.client.sendCtrlMsg(ControlMessage.CONNECT, payload);
+    this.client.sendCtrlConnect(this.session.token);
   }
 
   public void sendVersionAndPassword() {

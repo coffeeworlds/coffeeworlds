@@ -44,6 +44,16 @@ public class TeeworldsClient {
     this.messages.add(chunk);
   }
 
+  public void sendCtrlToken(byte[] token) {
+    byte[] payload = Arrays.copyOf(token, Protocol.REFLECTION_PROTECTION_PAYLOAD_SIZE);
+    sendCtrlMsg(ControlMessage.TOKEN, payload);
+  }
+
+  public void sendCtrlConnect(byte[] token) {
+    byte[] payload = Arrays.copyOf(token, Protocol.REFLECTION_PROTECTION_PAYLOAD_SIZE);
+    sendCtrlMsg(ControlMessage.CONNECT, payload);
+  }
+
   public void sendCtrlMsg(int MsgId) {
     sendCtrlMsg(MsgId, new byte[0]);
   }

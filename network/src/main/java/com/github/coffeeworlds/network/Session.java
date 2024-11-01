@@ -18,7 +18,7 @@ public class Session {
 
   public Session() {
     // TODO: this should be randomly generated
-    this.token = new byte[] {(byte) 0xc0, (byte) 0xff, (byte) 0xee, 0x00};
+    this.token = new byte[] {(byte) 0xc0, (byte) 0xff, (byte) 0xee, (byte) 0xee};
     this.peerToken = new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
     this.sequence = 0;
     this.ack = 0;
