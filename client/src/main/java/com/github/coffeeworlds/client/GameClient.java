@@ -2,16 +2,20 @@ package com.github.coffeeworlds.client;
 
 import com.github.coffeeworlds.network.Chunk;
 import com.github.coffeeworlds.network.ControlMessage;
+import com.github.coffeeworlds.network.MessageHandler;
 import com.github.coffeeworlds.network.Packet;
 import com.github.coffeeworlds.network.Protocol;
 import com.github.coffeeworlds.network.Session;
 import com.github.coffeeworlds.network.TeeworldsClient;
 import com.github.coffeeworlds.network.Unpacker;
+import com.github.coffeeworlds.network.system.MsgConReady;
 import com.github.coffeeworlds.network.system.MsgInfo;
 import com.github.coffeeworlds.network.system.MsgInfoBuilder;
+import com.github.coffeeworlds.network.system.MsgMapChange;
+import com.github.coffeeworlds.network.system.MsgReady;
 import java.util.HexFormat;
 
-public class GameClient {
+public class GameClient extends MessageHandler {
   byte[] serverToken;
   byte[] clientToken;
   NetClient netClient;
@@ -46,6 +50,22 @@ public class GameClient {
     this.client.sendMessage(msg);
   }
 
+  public void sendReady() {
+    MsgReady msg = new MsgReady();
+    this.client.sendMessage(msg);
+  }
+
+  @Override
+  public void onMapChange(MsgMapChange msg) {
+    super.onMapChange(msg);
+    sendReady();
+  }
+
+  @Override
+  public void onConReady(MsgConReady msg) {
+    super.onConReady(msg);
+  }
+
   public void onTick() {
     // System.out.print(".");
 
@@ -53,8 +73,11 @@ public class GameClient {
     this.client.flush();
   }
 
+  // TODO: this is called directly from the thread
+  //       have onTick() check if there is new data and then consume it in the main thread
+  //       to avoid any race conditions
   public void onNetworkData(byte[] data) {
-    Packet packet = new Packet(data, this.session);
+    Packet packet = new Packet(data, this.session, this);
     System.out.println(packet);
 
     // control message

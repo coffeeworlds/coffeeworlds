@@ -8,15 +8,25 @@ import java.util.HexFormat;
 public class Packet {
   public PacketHeader header;
   public ArrayList<Chunk> messages;
+  private MessageHandler messageHandler;
 
   public Packet(PacketHeader header) {
     this.header = header;
     this.messages = new ArrayList<Chunk>();
+    this.messageHandler = new MessageHandler();
   }
 
   public Packet(byte[] data, Session session) {
     this.header = new PacketHeader();
     this.messages = new ArrayList<Chunk>();
+    this.messageHandler = new MessageHandler();
+    unpack(data, session);
+  }
+
+  public Packet(byte[] data, Session session, MessageHandler handler) {
+    this.header = new PacketHeader();
+    this.messages = new ArrayList<Chunk>();
+    this.messageHandler = handler;
     unpack(data, session);
   }
 
@@ -44,7 +54,7 @@ public class Packet {
       return;
     }
 
-    MessageMatcher matcher = new MessageMatcher(session, unpacker);
+    MessageMatcher matcher = new MessageMatcher(session, unpacker, this.messageHandler);
     try {
       while (matcher.getMessage()) {
         // do what now?
@@ -73,6 +83,7 @@ public class Packet {
       System.out.println("packet pack failed: " + ex.getMessage());
       ex.printStackTrace();
     }
+
     return stream.toByteArray();
   }
 }

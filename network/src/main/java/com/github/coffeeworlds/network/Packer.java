@@ -21,6 +21,11 @@ public class Packer {
     return this.offset;
   }
 
+  public void addRaw(byte[] data) {
+    System.arraycopy(data, 0, this.buffer, this.offset, data.length);
+    this.offset += data.length;
+  }
+
   public void addInt(int num) {
     if (num < 0) {
       this.buffer[this.offset] |= 0x40; // set sign bit

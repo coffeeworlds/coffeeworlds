@@ -1,7 +1,9 @@
 package com.github.coffeeworlds.network;
 
 import com.github.coffeeworlds.network.MsgPacker.MsgType;
+import com.github.coffeeworlds.network.system.MsgConReady;
 import com.github.coffeeworlds.network.system.MsgInfo;
+import com.github.coffeeworlds.network.system.MsgMapChange;
 import java.util.ArrayList;
 import java.util.HexFormat;
 
@@ -10,11 +12,13 @@ public class MessageMatcher {
   private Unpacker unpacker;
   public Session session;
   public ArrayList<Chunk> messages;
+  private MessageHandler messageHandler;
 
-  public MessageMatcher(Session session, Unpacker unpacker) {
+  public MessageMatcher(Session session, Unpacker unpacker, MessageHandler handler) {
     this.messages = new ArrayList<Chunk>();
     this.unpacker = unpacker;
     this.session = session;
+    this.messageHandler = handler;
   }
 
   public boolean matchSys(int msgId, ChunkHeader header) {
@@ -22,6 +26,14 @@ public class MessageMatcher {
       MsgInfo msg = new MsgInfo(this.unpacker);
       this.messages.add(new Chunk(header, msg));
       return true;
+    } else if (msgId == SystemMessage.MAP_CHANGE) {
+      MsgMapChange msg = new MsgMapChange(this.unpacker);
+      this.messages.add(new Chunk(header, msg));
+      this.messageHandler.onMapChange(msg);
+    } else if (msgId == SystemMessage.CON_READY) {
+      MsgConReady msg = new MsgConReady(this.unpacker);
+      this.messages.add(new Chunk(header, msg));
+      this.messageHandler.onConReady(msg);
     }
     return false;
   }
