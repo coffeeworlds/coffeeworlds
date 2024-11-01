@@ -32,6 +32,6 @@ dependencies {
 spotless {
     java {
         importOrder()
-        googleJavaFormat()
+        googleJavaFormat().reflowLongStrings()
     }
 }
