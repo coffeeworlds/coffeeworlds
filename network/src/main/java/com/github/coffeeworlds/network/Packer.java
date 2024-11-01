@@ -26,6 +26,10 @@ public class Packer {
     this.offset += data.length;
   }
 
+  public void addBoolean(boolean value) {
+    addInt(value ? 1 : 0);
+  }
+
   public void addInt(int num) {
     if (num < 0) {
       this.buffer[this.offset] |= 0x40; // set sign bit

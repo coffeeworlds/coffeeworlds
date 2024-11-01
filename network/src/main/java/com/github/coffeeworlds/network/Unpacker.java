@@ -22,6 +22,11 @@ public class Unpacker {
     return b;
   }
 
+  // pop the latest boolean from the data
+  public boolean getBoolean() {
+    return getInt() == 1;
+  }
+
   // pop the latest int from the data
   public int getInt() {
     int sign = (getByte() >> 6) & 1;

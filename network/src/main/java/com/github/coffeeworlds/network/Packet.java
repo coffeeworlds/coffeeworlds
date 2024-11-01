@@ -54,6 +54,17 @@ public class Packet {
       return;
     }
 
+    if (this.header.flags.compression) {
+      try {
+        throw new TeeworldsException("compressed packets are not supported yet");
+      } catch (TeeworldsException ex) {
+        System.out.println("!!! full packet: " + HexFormat.of().formatHex(unpacker.getFullData()));
+        System.out.println("!!! packet unpack failed: " + ex.getMessage());
+        ex.printStackTrace();
+      }
+      return;
+    }
+
     MessageMatcher matcher = new MessageMatcher(session, unpacker, this.messageHandler);
     try {
       while (matcher.getMessage()) {

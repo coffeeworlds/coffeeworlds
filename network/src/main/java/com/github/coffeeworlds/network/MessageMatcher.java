@@ -55,6 +55,11 @@ public class MessageMatcher {
     MsgType msgType = ((msgAndSys & 1) == 0) ? MsgType.GAME : MsgType.SYSTEM;
     int msgId = msgAndSys >> 1;
 
+    // TODO: do the seq backroom thingy here
+    if (header.flags.vital) {
+      this.session.ack++;
+    }
+
     if (msgType == MsgType.SYSTEM) {
       return matchSys(msgId, header);
     }
