@@ -63,7 +63,7 @@ public class ChunkHeader {
     data[1] = (byte) (this.size & 0x3f);
     if (this.flags.vital) {
       data[1] |= (this.seq >> 2) & 0xc0;
-      data[2] = (byte) (this.size & 0x3f);
+      data[2] = (byte) (this.seq & 0x3f);
     }
     return data;
   }

@@ -14,4 +14,13 @@ class ChunkHeaderTest {
     ChunkHeader header = new ChunkHeader(unpacker);
     assertEquals(false, header.flags.vital);
   }
+
+  @Test
+  void basic() {
+    ChunkHeader header = new ChunkHeader(new byte[] {0x40, 0x3a, 0x01});
+    assertEquals(true, header.flags.vital);
+    assertEquals(false, header.flags.resend);
+    assertEquals(58, header.size);
+    assertEquals(1, header.seq);
+  }
 }
