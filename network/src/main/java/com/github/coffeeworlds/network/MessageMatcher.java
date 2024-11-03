@@ -3,9 +3,12 @@ package com.github.coffeeworlds.network;
 import com.github.coffeeworlds.network.MsgPacker.MsgType;
 import com.github.coffeeworlds.network.game.MsgSvMotd;
 import com.github.coffeeworlds.network.game.MsgSvReadyToEnter;
+import com.github.coffeeworlds.network.game.MsgSvTuneParams;
 import com.github.coffeeworlds.network.system.MsgConReady;
 import com.github.coffeeworlds.network.system.MsgInfo;
 import com.github.coffeeworlds.network.system.MsgMapChange;
+import com.github.coffeeworlds.network.system.MsgSnapEmpty;
+import com.github.coffeeworlds.network.system.MsgSnapSingle;
 import java.util.ArrayList;
 import java.util.HexFormat;
 
@@ -36,6 +39,14 @@ public class MessageMatcher {
       MsgConReady msg = new MsgConReady(this.unpacker);
       this.messages.add(new Chunk(header, msg));
       this.messageHandler.onConReady(msg);
+    } else if (msgId == SystemMessage.SNAPEMPTY) {
+      MsgSnapEmpty msg = new MsgSnapEmpty(this.unpacker);
+      this.messages.add(new Chunk(header, msg));
+      this.messageHandler.onSnapEmpty(msg);
+    } else if (msgId == SystemMessage.SNAPSINGLE) {
+      MsgSnapSingle msg = new MsgSnapSingle(this.unpacker);
+      this.messages.add(new Chunk(header, msg));
+      this.messageHandler.onSnapSingle(msg);
     } else {
       unpacker.getRaw(header.size);
       System.err.println("unknown system msg: " + msgId);
@@ -49,9 +60,12 @@ public class MessageMatcher {
       MsgSvMotd msg = new MsgSvMotd(this.unpacker);
       this.messages.add(new Chunk(header, msg));
     } else if (msgId == GameMessage.SV_READYTOENTER) {
-      MsgSvReadyToEnter msg = new MsgSvReadyToEnter(unpacker);
+      MsgSvReadyToEnter msg = new MsgSvReadyToEnter(this.unpacker);
       this.messages.add(new Chunk(header, msg));
       this.messageHandler.onReadyToEnter(msg);
+    } else if (msgId == GameMessage.SV_TUNEPARAMS) {
+      MsgSvTuneParams msg = new MsgSvTuneParams(this.unpacker);
+      this.messages.add(new Chunk(header, msg));
     } else {
       unpacker.getRaw(header.size);
       System.err.println("unknown game msg: " + msgId);

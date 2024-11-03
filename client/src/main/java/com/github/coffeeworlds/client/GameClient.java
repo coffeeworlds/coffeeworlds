@@ -16,8 +16,12 @@ import com.github.coffeeworlds.network.system.MsgConReady;
 import com.github.coffeeworlds.network.system.MsgEnterGame;
 import com.github.coffeeworlds.network.system.MsgInfo;
 import com.github.coffeeworlds.network.system.MsgInfoBuilder;
+import com.github.coffeeworlds.network.system.MsgInput;
+import com.github.coffeeworlds.network.system.MsgInputBuilder;
 import com.github.coffeeworlds.network.system.MsgMapChange;
 import com.github.coffeeworlds.network.system.MsgReady;
+import com.github.coffeeworlds.network.system.MsgSnapEmpty;
+import com.github.coffeeworlds.network.system.MsgSnapSingle;
 import java.util.HexFormat;
 
 public class GameClient extends MessageHandler {
@@ -81,6 +85,26 @@ public class GameClient extends MessageHandler {
     super.onReadyToEnter(msg);
 
     this.client.sendMessage(new MsgEnterGame());
+  }
+
+  @Override
+  public void onSnapSingle(MsgSnapSingle msg) {
+    super.onSnapSingle(msg);
+
+    // prediction tick is wrong
+    MsgInput input =
+        new MsgInputBuilder().ackGameTick(msg.gameTick).predictionTick(msg.gameTick).buildMsg();
+    this.client.sendMessage(input);
+  }
+
+  @Override
+  public void onSnapEmpty(MsgSnapEmpty msg) {
+    super.onSnapEmpty(msg);
+
+    // prediction tick is wrong
+    MsgInput input =
+        new MsgInputBuilder().ackGameTick(msg.gameTick).predictionTick(msg.gameTick).buildMsg();
+    this.client.sendMessage(input);
   }
 
   public void onTick() {
