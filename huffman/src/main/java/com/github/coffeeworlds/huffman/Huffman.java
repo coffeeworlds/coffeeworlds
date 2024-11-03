@@ -101,7 +101,6 @@ public class Huffman {
     }
 
     for (int i = 0; i < Huffman.MAX_SYMBOLS; i++) {
-      System.out.println("i=" + i);
       this.nodes[i].numBits = 0xffffffff;
       this.nodes[i].symbol = i;
       this.nodes[i].leafs[0] = 0xffff;
@@ -126,7 +125,7 @@ public class Huffman {
       this.nodes[this.numNodes].leafs[0] = nodesLeft[numNodesLeft - 1].nodeId;
       this.nodes[this.numNodes].leafs[1] = nodesLeft[numNodesLeft - 2].nodeId;
       nodesLeft[numNodesLeft - 2].nodeId = this.numNodes;
-      nodesLeft[numNodesLeft - 1].frequency =
+      nodesLeft[numNodesLeft - 2].frequency =
           nodesLeft[numNodesLeft - 1].frequency + nodesLeft[numNodesLeft - 2].frequency;
       this.numNodes++;
       numNodesLeft--;
