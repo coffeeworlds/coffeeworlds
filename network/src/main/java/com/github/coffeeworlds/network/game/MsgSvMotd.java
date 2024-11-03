@@ -17,13 +17,21 @@ public class MsgSvMotd implements NetMessage {
     this.message = message;
   }
 
+  public MsgSvMotd(Unpacker unpacker) {
+    unpack(unpacker);
+  }
+
   public String name() {
     return this.getClass().getSimpleName();
   }
 
+  public void unpack(Unpacker unpacker) {
+    this.message = unpacker.getString();
+  }
+
   public void unpack(byte[] data) {
     Unpacker unpacker = new Unpacker(data);
-    this.message = unpacker.getString();
+    unpack(unpacker);
   }
 
   public byte[] pack() {

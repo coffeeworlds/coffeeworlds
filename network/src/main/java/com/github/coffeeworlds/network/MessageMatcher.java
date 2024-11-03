@@ -1,6 +1,7 @@
 package com.github.coffeeworlds.network;
 
 import com.github.coffeeworlds.network.MsgPacker.MsgType;
+import com.github.coffeeworlds.network.game.MsgSvMotd;
 import com.github.coffeeworlds.network.system.MsgConReady;
 import com.github.coffeeworlds.network.system.MsgInfo;
 import com.github.coffeeworlds.network.system.MsgMapChange;
@@ -34,7 +35,20 @@ public class MessageMatcher {
       MsgConReady msg = new MsgConReady(this.unpacker);
       this.messages.add(new Chunk(header, msg));
       this.messageHandler.onConReady(msg);
+    } else {
+      System.err.println("unknown system msg: " + msgId);
     }
+    return false;
+  }
+
+  public boolean matchGame(int msgId, ChunkHeader header) {
+    if (msgId == GameMessage.SV_MOTD) {
+      MsgSvMotd msg = new MsgSvMotd(this.unpacker);
+      this.messages.add(new Chunk(header, msg));
+      return true;
+    }
+
+    System.err.println("unknown game msg: " + msgId);
     return false;
   }
 
@@ -61,9 +75,10 @@ public class MessageMatcher {
     }
 
     if (msgType == MsgType.SYSTEM) {
-      return matchSys(msgId, header);
+      matchSys(msgId, header);
+    } else {
+      matchGame(msgId, header);
     }
-
-    return false;
+    return true;
   }
 }

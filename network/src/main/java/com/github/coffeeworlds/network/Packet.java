@@ -1,5 +1,6 @@
 package com.github.coffeeworlds.network;
 
+import com.github.coffeeworlds.huffman.Huffman;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,17 +10,20 @@ public class Packet {
   public PacketHeader header;
   public ArrayList<Chunk> messages;
   private MessageHandler messageHandler;
+  private Huffman huffman;
 
   public Packet(PacketHeader header) {
     this.header = header;
     this.messages = new ArrayList<Chunk>();
     this.messageHandler = new MessageHandler();
+    this.huffman = new Huffman();
   }
 
   public Packet(byte[] data, Session session) {
     this.header = new PacketHeader();
     this.messages = new ArrayList<Chunk>();
     this.messageHandler = new MessageHandler();
+    this.huffman = new Huffman();
     unpack(data, session);
   }
 
@@ -27,6 +31,15 @@ public class Packet {
     this.header = new PacketHeader();
     this.messages = new ArrayList<Chunk>();
     this.messageHandler = handler;
+    this.huffman = new Huffman();
+    unpack(data, session);
+  }
+
+  public Packet(byte[] data, Session session, MessageHandler handler, Huffman huffman) {
+    this.header = new PacketHeader();
+    this.messages = new ArrayList<Chunk>();
+    this.messageHandler = handler;
+    this.huffman = huffman;
     unpack(data, session);
   }
 
@@ -55,14 +68,8 @@ public class Packet {
     }
 
     if (this.header.flags.compression) {
-      try {
-        throw new TeeworldsException("compressed packets are not supported yet");
-      } catch (TeeworldsException ex) {
-        System.out.println("!!! full packet: " + HexFormat.of().formatHex(unpacker.getFullData()));
-        System.out.println("!!! packet unpack failed: " + ex.getMessage());
-        ex.printStackTrace();
-      }
-      return;
+      byte[] decompressed = this.huffman.decompress(unpacker.getRemainingData());
+      unpacker = new Unpacker(decompressed);
     }
 
     MessageMatcher matcher = new MessageMatcher(session, unpacker, this.messageHandler);

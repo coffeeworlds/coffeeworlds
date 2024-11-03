@@ -1,5 +1,6 @@
 package com.github.coffeeworlds.client;
 
+import com.github.coffeeworlds.huffman.Huffman;
 import com.github.coffeeworlds.network.Chunk;
 import com.github.coffeeworlds.network.ControlMessage;
 import com.github.coffeeworlds.network.MessageHandler;
@@ -23,11 +24,13 @@ public class GameClient extends MessageHandler {
   NetClient netClient;
   Session session;
   TeeworldsClient client;
+  Huffman huffman;
 
   GameClient() {
     this.session = new Session();
     this.netClient = new NetClient(this);
     this.client = new TeeworldsClient(this.session, this.netClient);
+    this.huffman = new Huffman();
   }
 
   public void connect(String serverIp, int serverPort) {
