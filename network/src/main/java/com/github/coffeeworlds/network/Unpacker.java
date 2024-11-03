@@ -93,6 +93,9 @@ public class Unpacker {
 
   // non consuming dump of the remaining data
   public byte[] getRemainingData() {
+    if (remainingSize() == 0) {
+      return new byte[0];
+    }
     return Arrays.copyOfRange(this.fullData, this.index, this.fullData.length);
   }
 
@@ -102,6 +105,10 @@ public class Unpacker {
   }
 
   public int remainingSize() {
-    return this.fullData.length - this.index;
+    int remaining = this.fullData.length - this.index;
+    if (remaining < 0) {
+      return 0;
+    }
+    return remaining;
   }
 }

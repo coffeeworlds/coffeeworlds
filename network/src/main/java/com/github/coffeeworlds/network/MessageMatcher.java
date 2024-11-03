@@ -37,6 +37,7 @@ public class MessageMatcher {
       this.messages.add(new Chunk(header, msg));
       this.messageHandler.onConReady(msg);
     } else {
+      unpacker.getRaw(header.size);
       System.err.println("unknown system msg: " + msgId);
       return false;
     }
@@ -52,6 +53,7 @@ public class MessageMatcher {
       this.messages.add(new Chunk(header, msg));
       this.messageHandler.onReadyToEnter(msg);
     } else {
+      unpacker.getRaw(header.size);
       System.err.println("unknown game msg: " + msgId);
       return false;
     }
