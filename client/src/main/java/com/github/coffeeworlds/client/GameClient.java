@@ -114,10 +114,9 @@ public class GameClient extends MessageHandler {
     this.client.flush();
   }
 
-  // TODO: this is called directly from the thread
-  //       have onTick() check if there is new data and then consume it in the main thread
-  //       to avoid any race conditions
-  public void onNetworkData(byte[] data) {
+  // TODO: synchronized is slow use LinkedBlockingQueue instead
+  //       https://stackoverflow.com/a/14148447
+  public synchronized void onNetworkData(byte[] data) {
     Packet packet = new Packet(data, this.session, this);
     System.out.println(packet);
 
