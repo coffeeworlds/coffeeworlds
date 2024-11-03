@@ -11,7 +11,9 @@ import com.github.coffeeworlds.network.TeeworldsClient;
 import com.github.coffeeworlds.network.Unpacker;
 import com.github.coffeeworlds.network.game.MsgClStartInfo;
 import com.github.coffeeworlds.network.game.MsgClStartInfoBuilder;
+import com.github.coffeeworlds.network.game.MsgSvReadyToEnter;
 import com.github.coffeeworlds.network.system.MsgConReady;
+import com.github.coffeeworlds.network.system.MsgEnterGame;
 import com.github.coffeeworlds.network.system.MsgInfo;
 import com.github.coffeeworlds.network.system.MsgInfoBuilder;
 import com.github.coffeeworlds.network.system.MsgMapChange;
@@ -72,6 +74,13 @@ public class GameClient extends MessageHandler {
 
     MsgClStartInfo info = new MsgClStartInfoBuilder().name("coffewrlds.jar").buildMsg();
     this.client.sendMessage(info);
+  }
+
+  @Override
+  public void onReadyToEnter(MsgSvReadyToEnter msg) {
+    super.onReadyToEnter(msg);
+
+    this.client.sendMessage(new MsgEnterGame());
   }
 
   public void onTick() {
