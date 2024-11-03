@@ -12,4 +12,11 @@ class Node {
     this.symbol = symbol;
     this.leafs = new int[2];
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "<Node bits=%d numBits=%d symbol=%d leafs=[%d, %d]>",
+        this.bits, this.numBits, this.symbol, this.leafs[0], this.leafs[1]);
+  }
 }

@@ -151,7 +151,8 @@ public class Huffman {
       }
 
       while (bitcount < 24 && srcIndex < size) {
-        bits |= data[srcIndex] << bitcount;
+        int dataByte = data[srcIndex] & 0xff;
+        bits |= dataByte << bitcount;
         srcIndex += 1;
         bitcount += 8;
       }
