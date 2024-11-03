@@ -94,7 +94,7 @@ public class GameClient extends MessageHandler {
     // prediction tick is wrong
     MsgInput input =
         new MsgInputBuilder().ackGameTick(msg.gameTick).predictionTick(msg.gameTick).buildMsg();
-    this.client.sendMessage(input);
+    this.client.sendNonVitalMessage(input);
   }
 
   @Override
@@ -104,7 +104,7 @@ public class GameClient extends MessageHandler {
     // prediction tick is wrong
     MsgInput input =
         new MsgInputBuilder().ackGameTick(msg.gameTick).predictionTick(msg.gameTick).buildMsg();
-    this.client.sendMessage(input);
+    this.client.sendNonVitalMessage(input);
   }
 
   public void onTick() {
