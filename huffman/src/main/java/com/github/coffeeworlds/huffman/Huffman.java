@@ -1,5 +1,6 @@
 package com.github.coffeeworlds.huffman;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -137,6 +138,59 @@ public class Huffman {
   public byte[] decompress(byte[] data) {
     int srcIndex = 0;
     int size = data.length;
-    return data;
+    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    int bits = 0;
+    int bitcount = 0;
+    Node eof = this.nodes[EOF_SYMBOL];
+    Node node = new Node(0, 0, 0);
+
+    while (true) {
+      boolean foundNode = false;
+      if (bitcount >= LUTBITS) {
+        node = this.decodedLut[bits & LUTMASK];
+        foundNode = true;
+      }
+
+      while (bitcount < 24 && srcIndex < size) {
+        bits |= data[srcIndex] << bitcount;
+        srcIndex += 1;
+        bitcount += 8;
+      }
+
+      if (!foundNode) {
+        node = this.decodedLut[bits & LUTMASK];
+      }
+
+      if (node.numBits != 0) {
+        bits >>= node.numBits;
+        bitcount -= node.numBits;
+      } else {
+        bits >>= LUTBITS;
+        bitcount -= LUTBITS;
+
+        while (true) {
+          node = this.nodes[node.leafs[bits & 1]];
+          bitcount -= 1;
+          bits >>= 1;
+          if (node.numBits != 0) {
+            break;
+          }
+          if (bitcount == 0) {
+            try {
+              throw new HuffmanException("no more bits");
+            } catch (HuffmanException ex) {
+              System.out.println("huffman decompress failed: " + ex.getMessage());
+              ex.printStackTrace();
+            }
+          }
+        }
+      }
+      if (node == eof) {
+        break;
+      }
+      stream.write(node.symbol);
+    }
+
+    return stream.toByteArray();
   }
 }
