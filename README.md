@@ -1,12 +1,10 @@
 # coffeeworlds
 
-# !!WARNING!! there is no code yet the library does not exist yet lol !!WARNING!!
-
 A teeworlds 0.7 network library written in java.
 
 ---
 
-There is a sample client implementation in **client/** and the network library in **network/**.
+There is a sample client implementation in **client/** and the network library in **network/** and the compression library in **huffman/**
 
 ## Run the sample client
 
