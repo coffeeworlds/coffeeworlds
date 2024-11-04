@@ -11,47 +11,47 @@ public class PacketHeaderBuilder {
     this._flags = new PacketFlags();
   }
 
-  PacketHeaderBuilder ack(int acknowledgeNumber) {
+  public PacketHeaderBuilder ack(int acknowledgeNumber) {
     this._ack = acknowledgeNumber;
     return this;
   }
 
-  PacketHeaderBuilder numChunks(int num) {
+  public PacketHeaderBuilder numChunks(int num) {
     this._numChunks = num;
     return this;
   }
 
-  PacketHeaderBuilder token(byte[] securityToken) {
+  public PacketHeaderBuilder token(byte[] securityToken) {
     this._token = securityToken;
     return this;
   }
 
-  PacketHeaderBuilder setFlagControl() {
+  public PacketHeaderBuilder setFlagControl() {
     this._flags.control = true;
     return this;
   }
 
-  PacketHeaderBuilder setFlagControl(boolean control) {
+  public PacketHeaderBuilder setFlagControl(boolean control) {
     this._flags.control = control;
     return this;
   }
 
-  PacketHeaderBuilder setFlagResend() {
+  public PacketHeaderBuilder setFlagResend() {
     this._flags.resend = true;
     return this;
   }
 
-  PacketHeaderBuilder setFlagCompression() {
+  public PacketHeaderBuilder setFlagCompression() {
     this._flags.compression = true;
     return this;
   }
 
-  PacketHeaderBuilder setFlagConnless() {
+  public PacketHeaderBuilder setFlagConnless() {
     this._flags.connless = true;
     return this;
   }
 
-  PacketHeader buildHeader() {
+  public PacketHeader buildHeader() {
     return new PacketHeader(this._ack, this._numChunks, this._token, this._flags);
   }
 }
